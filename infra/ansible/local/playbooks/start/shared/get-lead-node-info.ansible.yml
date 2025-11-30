@@ -1,0 +1,19 @@
+---
+- name: (Lead) Get the first node
+  vars:
+    all_nodes: "{{ lookup('env', 'NODES') }}"
+  set_fact:
+    node_info: "metagraph-node-1"  
+
+- name: (Lead) Get lead node info
+  community.docker.docker_container_exec:
+    container: "metagraph-node-1"
+    command: "bash -c 'cd global-l0 && java -jar cl-wallet.jar show-id'"
+    env:
+      CL_KEYSTORE: "token-key.p12"
+      CL_KEYALIAS: "token-key"
+      CL_PASSWORD: "password"
+  register: node_id
+
+- set_fact:
+    lead_node_id: "{{ node_id.stdout  }}"
