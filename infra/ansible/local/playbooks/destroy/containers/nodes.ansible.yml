@@ -2,7 +2,7 @@
 - name: Destroy Containers and Network
   hosts: localhost
   vars:
-    nodes: "{{ nodes | from_json }}"
+    nodes: "{{ nodes }}"
     infra_path: "{{ infra_path }}"
   
   tasks:

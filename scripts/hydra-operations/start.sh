@@ -138,7 +138,7 @@ function try_start_grafana() {
 
 function print_nodes_information() {
     ansible_vars_path=$ANSIBLE_LOCAL_VARS
-    offset=$(yq eval '.offset' $ansible_vars_path)
+    offset=$(yq '.offset' $ansible_vars_path)
     index=0
 
     echo_white "######################### METAGRAPH INFO #########################"
@@ -152,30 +152,30 @@ function print_nodes_information() {
         echo_green "Container $name URLs"
 
         if [[ $index -eq 0 ]] && [[ " ${LAYERS[*]} " =~ "global-l0" ]]; then
-            raw_port=$(yq eval '.base_global_l0_public_port' $ansible_vars_path)
+            raw_port=$(yq '.base_global_l0_public_port' $ansible_vars_path)
             echo_url "Global L0:" "http://localhost:$raw_port/node/info"
         fi
 
         if [[ " ${LAYERS[*]} " =~ "dag-l1" ]]; then
-            raw_port=$(yq eval '.base_dag_l1_public_port' $ansible_vars_path)
+            raw_port=$(yq '.base_dag_l1_public_port' $ansible_vars_path)
             port=$(($raw_port + $index * $offset))
             echo_url "DAG L1:" "http://localhost:$port/node/info"
         fi
 
         if [[ " ${LAYERS[*]} " =~ "metagraph-l0" ]]; then
-            raw_port=$(yq eval '.base_metagraph_l0_public_port' $ansible_vars_path)
+            raw_port=$(yq '.base_metagraph_l0_public_port' $ansible_vars_path)
             port=$(($raw_port + $index * $offset))
             echo_url "Metagraph L0:" "http://localhost:$port/node/info"
         fi
 
         if [[ " ${LAYERS[*]} " =~ "currency-l1" ]] || [[ " ${LAYERS[*]} " =~ "metagraph-l1-currency" ]]; then
-            raw_port=$(yq eval '.base_currency_l1_public_port' $ansible_vars_path)
+            raw_port=$(yq '.base_currency_l1_public_port' $ansible_vars_path)
             port=$(($raw_port + $index * $offset))
             echo_url "Currency L1:" "http://localhost:$port/node/info"
         fi
 
         if [[ " ${LAYERS[*]} " =~ "data-l1" ]] || [[ " ${LAYERS[*]} " =~ "metagraph-l1-data" ]]; then
-            raw_port=$(yq eval '.base_data_l1_public_port' $ansible_vars_path)
+            raw_port=$(yq '.base_data_l1_public_port' $ansible_vars_path)
             port=$(($raw_port + $index * $offset))
             echo_url "Data L1:" "http://localhost:$port/node/info"
         fi
@@ -192,27 +192,27 @@ function print_nodes_information() {
 
     echo_green "Clusters URLs"
     if [[ " ${LAYERS[*]} " =~ "global-l0" ]]; then
-        raw_port=$(yq eval '.base_global_l0_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_global_l0_public_port' $ansible_vars_path)
         echo_url "Global L0:" "http://localhost:$raw_port/cluster/info"
     fi
 
     if [[ " ${LAYERS[*]} " =~ "dag-l1" ]]; then
-        raw_port=$(yq eval '.base_dag_l1_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_dag_l1_public_port' $ansible_vars_path)
         echo_url "DAG L1:" "http://localhost:$raw_port/cluster/info"
     fi
 
     if [[ " ${LAYERS[*]} " =~ "metagraph-l0" ]]; then
-        raw_port=$(yq eval '.base_metagraph_l0_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_metagraph_l0_public_port' $ansible_vars_path)
         echo_url "Metagraph L0:" "http://localhost:$raw_port/cluster/info"
     fi
 
     if [[ " ${LAYERS[*]} " =~ "currency-l1" ]] || [[ " ${LAYERS[*]} " =~ "metagraph-l1-currency" ]]; then
-        raw_port=$(yq eval '.base_currency_l1_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_currency_l1_public_port' $ansible_vars_path)
         echo_url "Currency L1:" "http://localhost:$raw_port/cluster/info"
     fi
 
     if [[ " ${LAYERS[*]} " =~ "data-l1" ]] || [[ " ${LAYERS[*]} " =~ "metagraph-l1-data" ]]; then
-        raw_port=$(yq eval '.base_data_l1_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_data_l1_public_port' $ansible_vars_path)
         echo_url "Data L1:" "http://localhost:$raw_port/cluster/info"
     fi
 

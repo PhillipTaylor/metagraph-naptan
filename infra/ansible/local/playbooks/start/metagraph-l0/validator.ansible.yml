@@ -37,9 +37,9 @@
       CL_GLOBAL_L0_PEER_HTTP_PORT: "{{ gl0_lead_node_public_port | string }}"
       CL_GLOBAL_L0_PEER_ID: "{{ lead_node_id }}"
 
-      CL_KEYSTORE: "/code/global-l0/token-key.p12"
-      CL_KEYALIAS: "token-key"
-      CL_PASSWORD: "password"
+      CL_KEYSTORE: "/code/global-l0/{{ validator_node_info.key_file.name }}"
+      CL_KEYALIAS: "{{ validator_node_info.key_file.alias }}"
+      CL_PASSWORD: "{{ validator_node_info.key_file.password }}"
 
       CL_L0_TOKEN_IDENTIFIER: "{{ metagraph_id }}"
       

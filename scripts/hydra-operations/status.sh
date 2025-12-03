@@ -25,7 +25,7 @@ function status_containers() {
   check_docker_health
 
   ansible_vars_path=$INFRA_PATH/ansible/local/playbooks/vars.ansible.yml
-  offset=$(yq eval '.offset' $ansible_vars_path)
+  offset=$(yq '.offset' $ansible_vars_path)
   index=0
 
   echo
@@ -50,7 +50,7 @@ function status_containers() {
       if [[ $index -eq 0 ]] && [[ " ${LAYERS[*]} " =~ "global-l0" ]]; then
         echo
         echo_green "Global L0"
-        raw_port=$(yq eval '.base_global_l0_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_global_l0_public_port' $ansible_vars_path)
         local url=http://localhost:$raw_port/node/info
         echo_url "URL:" "$url"
         echo_url "Node info:" "$(curl -s $url)"
@@ -59,7 +59,7 @@ function status_containers() {
       if [[ " ${LAYERS[*]} " =~ "dag-l1" ]]; then
         echo
         echo_green "DAG L1"
-        raw_port=$(yq eval '.base_dag_l1_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_dag_l1_public_port' $ansible_vars_path)
         port=$(($raw_port + $index * $offset))
         local url=http://localhost:$port/node/info
         echo_url "URL:" "$url"
@@ -69,7 +69,7 @@ function status_containers() {
       if [[ " ${LAYERS[*]} " =~ "metagraph-l0" ]]; then
         echo
         echo_green "Metagraph L0"
-        raw_port=$(yq eval '.base_metagraph_l0_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_metagraph_l0_public_port' $ansible_vars_path)
         port=$(($raw_port + $index * $offset))
         local url=http://localhost:$port/node/info
         echo_url "URL:" "$url"
@@ -79,7 +79,7 @@ function status_containers() {
       if [[ " ${LAYERS[*]} " =~ "currency-l1" ]] || [[ " ${LAYERS[*]} " =~ "metagraph-l1-currency" ]]; then
         echo
         echo_green "Currency L1"
-        raw_port=$(yq eval '.base_currency_l1_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_currency_l1_public_port' $ansible_vars_path)
         port=$(($raw_port + $index * $offset))
         local url=http://localhost:$port/node/info
         echo_url "URL:" "$url"
@@ -89,7 +89,7 @@ function status_containers() {
       if [[ " ${LAYERS[*]} " =~ "data-l1" ]] || [[ " ${LAYERS[*]} " =~ "metagraph-l1-data" ]]; then
         echo
         echo_green "Data L1"
-        raw_port=$(yq eval '.base_data_l1_public_port' $ansible_vars_path)
+        raw_port=$(yq '.base_data_l1_public_port' $ansible_vars_path)
         port=$(($raw_port + $index * $offset))
         local url=http://localhost:$port/node/info
         echo_url "URL:" "$url"
@@ -105,7 +105,7 @@ function status_containers() {
   if [[ " ${LAYERS[*]} " =~ "global-l0" ]]; then
     echo
     echo_green "Global L0"
-    raw_port=$(yq eval '.base_global_l0_public_port' $ansible_vars_path)
+    raw_port=$(yq '.base_global_l0_public_port' $ansible_vars_path)
     local url=http://localhost:$raw_port/cluster/info
     echo_url "URL:" "$url"
     echo_url "Cluster info:" "$(curl -s $url)"
@@ -115,7 +115,7 @@ function status_containers() {
   if [[ " ${LAYERS[*]} " =~ "dag-l1" ]]; then
     echo
     echo_green "DAG L1"
-    raw_port=$(yq eval '.base_dag_l1_public_port' $ansible_vars_path)
+    raw_port=$(yq '.base_dag_l1_public_port' $ansible_vars_path)
     local url=http://localhost:$raw_port/cluster/info
     echo_url "URL:" "$url"
     echo_url "Cluster info:" "$(curl -s $url)"
@@ -124,7 +124,7 @@ function status_containers() {
   if [[ " ${LAYERS[*]} " =~ "metagraph-l0" ]]; then
     echo
     echo_green "Metagraph L0"
-    raw_port=$(yq eval '.base_metagraph_l0_public_port' $ansible_vars_path)
+    raw_port=$(yq '.base_metagraph_l0_public_port' $ansible_vars_path)
     local url=http://localhost:$raw_port/cluster/info
     echo_url "URL:" "$url"
     echo_url "Cluster info:" "$(curl -s $url)"
@@ -134,7 +134,7 @@ function status_containers() {
   if [[ " ${LAYERS[*]} " =~ "currency-l1" ]] || [[ " ${LAYERS[*]} " =~ "metagraph-l1-currency" ]]; then
     echo
     echo_green "Currency L1"
-    raw_port=$(yq eval '.base_currency_l1_public_port' $ansible_vars_path)
+    raw_port=$(yq '.base_currency_l1_public_port' $ansible_vars_path)
     local url=http://localhost:$raw_port/cluster/info
     echo_url "URL:" "$url"
     echo_url "Cluster info:" "$(curl -s $url)"
@@ -144,7 +144,7 @@ function status_containers() {
   if [[ " ${LAYERS[*]} " =~ "data-l1" ]] || [[ " ${LAYERS[*]} " =~ "metagraph-l1-data" ]]; then
     echo
     echo_green "Data L1"
-    raw_port=$(yq eval '.base_data_l1_public_port' $ansible_vars_path)
+    raw_port=$(yq '.base_data_l1_public_port' $ansible_vars_path)
     local url=http://localhost:$raw_port/cluster/info
     echo_url "URL:" "$url"
     echo_url "Cluster info:" "$(curl -s $url)"

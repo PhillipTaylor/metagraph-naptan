@@ -52,7 +52,7 @@
   tasks:
     - name: Get all nodes from euclid.json
       set_fact:
-        all_nodes: "{{ lookup('env', 'NODES') }}"
+        all_nodes: "{{ lookup('env', 'NODES') | from_yaml }}"
 
     - name: Create custom network
       docker_network:
@@ -92,7 +92,7 @@
           - "{{ (base_data_l1_public_port | int ) +  (offset * index) }}:{{ (base_data_l1_public_port | int ) + (offset * index) }}"
           - "{{ (base_data_l1_p2p_port | int ) +  (offset * index) }}:{{ (base_data_l1_p2p_port | int ) + (offset * index) }}"
           - "{{ (base_data_l1_cli_port | int ) +  (offset * index) }}:{{ (base_data_l1_cli_port | int ) + (offset * index) }}"
-      loop: "{{ all_nodes | from_json }}"
+      loop: "{{ all_nodes }}"
       loop_control:
         loop_var: node_info
         index_var: index

@@ -38,9 +38,9 @@
       CL_GLOBAL_L0_PEER_HTTP_PORT: "{{ network_host_public_port | default(gl0_lead_node_public_port, true) | string }}"
       CL_GLOBAL_L0_PEER_ID: "{{ network_host_id | default(lead_node_id, true) }}"
 
-      CL_KEYSTORE: "/code/global-l0/token-key.p12"
-      CL_KEYALIAS: "token-key"
-      CL_PASSWORD: "password"
+      CL_KEYSTORE: "/code/global-l0/{{ node_info.key_file.name }}"
+      CL_KEYALIAS: "{{ node_info.key_file.alias }}"
+      CL_PASSWORD: "{{ node_info.key_file.password }}"
       
       CL_APP_ENV: dev
       CL_COLLATERAL: "0"
@@ -72,9 +72,9 @@
   community.docker.docker_container_exec:
     container: "metagraph-node-1"
     env:
-      CL_KEYSTORE: "/code/global-l0/token-key.p12"
-      CL_KEYALIAS: "token-key"
-      CL_PASSWORD: "password"
+      CL_KEYSTORE: "/code/global-l0/{{ node_info.key_file.name }}"
+      CL_KEYALIAS: "{{ node_info.key_file.alias }}"
+      CL_PASSWORD: "{{ node_info.key_file.password }}"
     command: >
       /bin/bash -lc '
         set -euo pipefail
@@ -110,9 +110,9 @@
       CL_GLOBAL_L0_PEER_HTTP_HOST: "{{ lead_node_ip }}"
       CL_GLOBAL_L0_PEER_HTTP_PORT: "{{ gl0_lead_node_public_port | string }}"
       CL_GLOBAL_L0_PEER_ID: "{{ lead_node_id }}"
-      CL_KEYSTORE: "/code/global-l0/token-key.p12"
-      CL_KEYALIAS: "token-key"
-      CL_PASSWORD: "password"
+      CL_KEYSTORE: "/code/global-l0/{{ node_info.key_file.name }}"
+      CL_KEYALIAS: "{{ node_info.key_file.alias }}"
+      CL_PASSWORD: "{{ node_info.key_file.password }}"
       CL_APP_ENV: dev
       CL_COLLATERAL: "0"
     command: >
