@@ -1,14 +1,14 @@
-import Dependencies._
-import sbt._
+import Dependencies.*
+import sbt.*
 
-ThisBuild / organization := "com.my.currency"
+ThisBuild / organization := "com.my.metagraph_social"
 ThisBuild / scalaVersion := "2.13.10"
 ThisBuild / evictionErrorLevel := Level.Warn
 
 ThisBuild / assemblyMergeStrategy := {
-  case "logback.xml"                                       => MergeStrategy.first
-  case x if x.contains("io.netty.versions.properties")     => MergeStrategy.discard
-  case PathList(xs @ _*) if xs.last == "module-info.class" => MergeStrategy.first
+  case "logback.xml" => MergeStrategy.first
+  case x if x.contains("io.netty.versions.properties") => MergeStrategy.discard
+  case PathList(xs@_*) if xs.last == "module-info.class" => MergeStrategy.first
   case x =>
     val oldStrategy = (assembly / assemblyMergeStrategy).value
     oldStrategy(x)
@@ -16,7 +16,7 @@ ThisBuild / assemblyMergeStrategy := {
 
 lazy val root = (project in file(".")).
   settings(
-    name := "phill-naptan"
+    name := "metagraph_social"
   ).aggregate(sharedData, currencyL0, currencyL1, dataL1)
 
 lazy val sharedData = (project in file("modules/shared_data"))
@@ -24,17 +24,21 @@ lazy val sharedData = (project in file("modules/shared_data"))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(JavaAppPackaging)
   .settings(
-    name := "phill-naptan-shared_data",
+    name := "metagraph_social-shared_data",
     scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := "com.my.currency.shared_data",
+    buildInfoPackage := "com.my.metagraph_social.shared_data",
     resolvers += Resolver.mavenLocal,
     Defaults.itSettings,
     libraryDependencies ++= Seq(
       CompilerPlugin.kindProjector,
       CompilerPlugin.betterMonadicFor,
       CompilerPlugin.semanticDB,
-      Libraries.tessellationSdk
+      Libraries.tessellationSdk,
+      Libraries.doobieCore,
+      Libraries.doobieHikari,
+      Libraries.doobiePostgres,
+      Libraries.postgres
     )
   )
 lazy val currencyL1 = (project in file("modules/l1"))
@@ -42,10 +46,10 @@ lazy val currencyL1 = (project in file("modules/l1"))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(JavaAppPackaging)
   .settings(
-    name := "phill-naptan-currency-l1",
+    name := "metagraph_social-currency-l1",
     scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := "com.my.currency.l1",
+    buildInfoPackage := "com.my.metagraph_social.l1",
     resolvers += Resolver.mavenLocal,
     Defaults.itSettings,
     libraryDependencies ++= Seq(
@@ -62,10 +66,10 @@ lazy val currencyL0 = (project in file("modules/l0"))
   .enablePlugins(JavaAppPackaging)
   .dependsOn(sharedData)
   .settings(
-    name := "phill-naptan-currency-l0",
+    name := "metagraph_social-currency-l0",
     scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := "com.my.currency.l0",
+    buildInfoPackage := "com.my.metagraph_social.l0",
     resolvers += Resolver.mavenLocal,
     Defaults.itSettings,
     libraryDependencies ++= Seq(
@@ -75,7 +79,12 @@ lazy val currencyL0 = (project in file("modules/l0"))
       Libraries.declineRefined,
       Libraries.declineCore,
       Libraries.declineEffect,
-      Libraries.tessellationSdk
+      Libraries.tessellationSdk,
+      Libraries.http4sCore,
+      Libraries.http4sDsl,
+      Libraries.http4sServer,
+      Libraries.http4sClient,
+      Libraries.http4sCirce
     )
   )
 
@@ -85,10 +94,10 @@ lazy val dataL1 = (project in file("modules/data_l1"))
   .enablePlugins(JavaAppPackaging)
   .dependsOn(sharedData)
   .settings(
-    name := "phill-naptan-data_l1",
+    name := "metagraph_social-data_l1",
     scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-    buildInfoPackage := "com.my.currency.data_l1",
+    buildInfoPackage := "com.my.metagraph_social.data_l1",
     resolvers += Resolver.mavenLocal,
     Defaults.itSettings,
     libraryDependencies ++= Seq(

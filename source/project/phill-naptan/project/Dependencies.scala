@@ -1,22 +1,36 @@
-import sbt._
+import sbt.*
 
 object Dependencies {
 
   object V {
     val tessellation = "3.5.0-rc.0"
     val decline = "2.4.1"
+    val http4s = "0.23.16"
   }
+
   def tessellation(artifact: String): ModuleID = "io.constellationnetwork" %% s"tessellation-$artifact" % V.tessellation
+
+  def http4s(artifact: String): ModuleID = "org.http4s" %% s"http4s-$artifact" % V.http4s
 
   def decline(artifact: String = ""): ModuleID =
     "com.monovore" %% {
       if (artifact.isEmpty) "decline" else s"decline-$artifact"
     } % V.decline
+
   object Libraries {
     val tessellationSdk = tessellation("sdk")
     val declineCore = decline()
     val declineEffect = decline("effect")
     val declineRefined = decline("refined")
+    val http4sCore = http4s("core")
+    val http4sDsl = http4s("dsl")
+    val http4sServer = http4s("ember-server")
+    val http4sClient = http4s("ember-client")
+    val http4sCirce = http4s("circe")
+    val doobieCore = "org.tpolecat" %% "doobie-core" % "1.0.0-RC2"
+    val doobieHikari = "org.tpolecat" %% "doobie-hikari" % "1.0.0-RC2"
+    val doobiePostgres = "org.tpolecat" %% "doobie-postgres" % "1.0.0-RC2"
+    val postgres = "org.postgresql" % "postgresql" % "42.2.23"
   }
 
 
