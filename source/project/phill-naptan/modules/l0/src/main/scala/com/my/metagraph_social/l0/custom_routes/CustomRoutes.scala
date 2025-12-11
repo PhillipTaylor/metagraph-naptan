@@ -1,10 +1,11 @@
 package com.my.metagraph_social.l0.custom_routes
 
 import cats.effect.Async
+import cats.effect.unsafe.implicits.global
 import cats.syntax.flatMap._
 import cats.syntax.functor._
 import com.my.metagraph_social.shared_data.calculated_state.CalculatedStateService
-//import com.my.metagraph_social.shared_data.types.States.UserPost
+import com.my.metagraph_social.shared_data.types.States.NaptanEntry
 import derevo.circe.magnolia.{decoder, encoder}
 import derevo.derive
 import eu.timepit.refined.auto._
@@ -14,89 +15,63 @@ import io.constellationnetwork.schema.address.Address
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.middleware.CORS
-import org.http4s.{HttpRoutes, Response}
+import org.http4s.{HttpRoutes, Request, Response}
 import org.typelevel.log4cats.SelfAwareStructuredLogger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
+import io.circe._
+import io.circe.syntax._
 
 case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateService[F]) extends Http4sDsl[F] with PublicRoutes[F] {
   implicit val logger: SelfAwareStructuredLogger[F] = Slf4jLogger.getLogger[F]
 
-  //private def getAllUsersWithPosts: F[Response[F]] = {
-  //  calculatedStateService.get
-  //    .map(_.state)
-  //    .map { state =>
-  //      state.users.filter { info =>
-  //          val (_, userInfo) = info
-  //          userInfo.posts.nonEmpty
-  //        }
-  //        .keySet
-  //    }
-  //    .flatMap { existingUsers =>
-  //      Ok(existingUsers)
-  //    }
-  //}
+  private def getAllNaptanEntries: F[Response[F]] = {
+    logger.info(s"Returning all naptan entries")
+    calculatedStateService.get
+      .map(_.state.uniqueNaptanEntries)
+      .flatMap { allNaptanEntries =>
+        println(s"Found ${allNaptanEntries.length}")
+        Ok(allNaptanEntries)
+      }
+  }
 
-  //private def getAllPosts: F[Response[F]] = {
-  //  calculatedStateService.get
-  //    .map(_.state)
-  //    .map { state =>
-  //      state.users
-  //        .map { info =>
-  //          val (address, userInfo) = info
-  //          userInfo.posts.map(UserFeedPost(address, _))
-  //        }
-  //        .toList
-  //        .flatten
+  private def getNaptanEntryByCode(naptanCode :String): F[Response[F]] = {
+    logger.info(s"Search all naptan entries for $naptanCode")
+    calculatedStateService.get
+      .map(_.state)
+      .map { state =>
+        state.uniqueNaptanEntries
+          .filter { naptanEntry => naptanEntry.naptanCode.equalsIgnoreCase(naptanCode) }
 
-  //    }
-  //    .flatMap { allPosts =>
-  //      Ok(allPosts)
-  //    }
-  //}
+      }
+      .flatMap { allNaptanEntries =>
+        println(s"Found ${allNaptanEntries.length} matches for $naptanCode")
+        Ok(allNaptanEntries)
+      }
+  }
 
-  //private def getUserPosts(userId: Address): F[Response[F]] = {
-  //  calculatedStateService.get
-  //    .map(_.state)
-  //    .map { state => state.users.get(userId) }
-  //    .flatMap { maybeUserInfo =>
-  //      maybeUserInfo.fold(NotFound())(userInfo => Ok(userInfo.posts))
-  //    }
-  //}
-
-  //private def getUserSubscriptions(userId: Address): F[Response[F]] = {
-  //  calculatedStateService.get
-  //    .map(_.state)
-  //    .map { state => state.users.get(userId) }
-  //    .flatMap { maybeUserInfo =>
-  //      maybeUserInfo.fold(NotFound())(userInfo => Ok(userInfo.subscriptions))
-  //    }
-  //}
-
-  //private def getUserFeed(userId: Address): F[Response[F]] = {
-  //  for {
-  //    calculatedState <- calculatedStateService.get
-  //    userInformation = calculatedState.state.users
-  //    subscriptions = userInformation
-  //      .get(userId)
-  //      .map(_.subscriptions)
-  //      .getOrElse(List.empty[Address])
-  //    responsePosts = subscriptions.flatMap { subscriptionAddress =>
-  //      userInformation
-  //        .get(subscriptionAddress)
-  //        .map(_.posts.map(UserFeedPost(subscriptionAddress, _)))
-  //        .getOrElse(List.empty[UserFeedPost])
-  //    }
-  //    response <- Ok(responsePosts)
-  //  } yield response
-  //}
+  private def addNaptanEntry(request :Request[F]) :F[Response[F]] = {
+    logger.info(s"Placeholder for returning a naptan entry")
+    //val payload :String = request.body.through(fs2.text.utf8.decode).compile.string.unsafeRunSync() // temporary hack
+    request.body.through(fs2.text.utf8.decode).compile.string.map { payload =>
+      logger.info(s"Placeholder for returning a naptan entry")
+      io.circe.parser.decode[NaptanEntry](payload) match {
+        case Left(circeExc) => BadRequest(s"Unable to decode submitted payload: $circeExc from $payload")
+        case Right(naptanEntry) =>
+          logger.info(s"Successfully parsed JSON into Naptan Entry. Ready to commit")
+          Ok(naptanEntry.asJson)
+      }
+    }.flatten //.unsafeRunSync()
+  }
 
   private val routes: HttpRoutes[F] = HttpRoutes.of[F] {
-    case GET -> Root / "hello" => Ok("hello")
-    //case GET -> Root / "users" => getAllUsersWithPosts
-    //case GET -> Root / "posts" => getAllPosts
-    //case GET -> Root / "users" / AddressVar(userId) / "posts" => getUserPosts(userId)
-    //case GET -> Root / "users" / AddressVar(userId) / "subscriptions" => getUserSubscriptions(userId)
-    //case GET -> Root / "users" / AddressVar(userId) / "feed" => getUserFeed(userId)
+    case GET -> Root / "version" => Ok(Json.obj(
+      "applicationName" -> "Naptan Database".asJson,
+      "applicationVersion" -> "0.0.1".asJson,
+      "now" -> java.time.ZonedDateTime.now().toString().asJson
+    ))
+    case GET -> Root / "naptanEntries" / "all" => getAllNaptanEntries
+    case GET -> Root / "naptanEntries" / "search" / naptanCode => getNaptanEntryByCode(naptanCode)
+    case req @ POST -> Root / "naptanEntries" / "insertOne" => addNaptanEntry(req)
   }
 
   val public: HttpRoutes[F] =

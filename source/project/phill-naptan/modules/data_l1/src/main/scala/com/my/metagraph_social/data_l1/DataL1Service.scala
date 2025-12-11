@@ -13,6 +13,8 @@ import io.constellationnetwork.security.signature.Signed
 import io.constellationnetwork.security.signature.Signed._
 import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 import org.http4s.{EntityDecoder, HttpRoutes}
+import org.typelevel.log4cats.SelfAwareStructuredLogger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object DataL1Service {
 
@@ -25,8 +27,10 @@ object DataL1Service {
 
       override def validateUpdate(
         update: NaptanEntry
-      )(implicit context: L1NodeContext[F]): F[DataApplicationValidationErrorOr[Unit]] =
+      )(implicit context: L1NodeContext[F]): F[DataApplicationValidationErrorOr[Unit]] = {
+        
         Async[F].pure(LifecycleSharedFunctions.validateUpdate(update))
+      }
 
       override def routes(implicit context: L1NodeContext[F]): HttpRoutes[F] =
         HttpRoutes.empty
