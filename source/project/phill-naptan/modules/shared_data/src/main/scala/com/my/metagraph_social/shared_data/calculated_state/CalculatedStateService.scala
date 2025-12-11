@@ -35,17 +35,16 @@ object CalculatedStateService {
           snapshotOrdinal: SnapshotOrdinal,
           state          : NaptanUnifiedDataset
         ): F[Boolean] = stateRef.modify { currentState =>
-          val newState = CalculatedState(snapshotOrdinal, NaptanUnifiedDataset(List.empty))
+          //val newState = CalculatedState(snapshotOrdinal, NaptanUnifiedDataset(List.empty))
           externalStorageService.set(snapshotOrdinal, state).as(true)
-          ???
-          // val currentCalculatedState = currentState.state
+          val newUnifiedModel :NaptanUnifiedDataset = NaptanUnifiedDataset(uniqueNaptanEntries = currentState.state.uniqueNaptanEntries ++ state.uniqueNaptanEntries)
           //val updatedUsers = state.users.foldLeft(currentCalculatedState.users) {
           //  case (acc, (address, value)) =>
           //    acc.updated(address, value)
           //}
-          //val newState = CalculatedState(snapshotOrdinal, NaptanUnifiedDataset(updatedUsers))
+          val newState = CalculatedState(snapshotOrdinal, newUnifiedModel)
 
-          //newState -> externalStorageService.set(snapshotOrdinal, state).as(true)
+          newState -> externalStorageService.set(snapshotOrdinal, state).as(true)
         }.flatten
 
         override def hash(

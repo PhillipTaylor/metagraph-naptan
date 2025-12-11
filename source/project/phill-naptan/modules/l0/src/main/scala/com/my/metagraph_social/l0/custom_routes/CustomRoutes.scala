@@ -91,7 +91,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
   //}
 
   private val routes: HttpRoutes[F] = HttpRoutes.of[F] {
-    case GET -> Root => Ok("hello")
+    case GET -> Root / "hello" => Ok("hello")
     //case GET -> Root / "users" => getAllUsersWithPosts
     //case GET -> Root / "posts" => getAllPosts
     //case GET -> Root / "users" / AddressVar(userId) / "posts" => getUserPosts(userId)
