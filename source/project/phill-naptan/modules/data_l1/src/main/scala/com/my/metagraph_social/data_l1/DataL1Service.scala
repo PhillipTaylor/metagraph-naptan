@@ -3,16 +3,16 @@ package com.my.metagraph_social.data_l1
 import cats.effect.Async
 import com.my.metagraph_social.shared_data.LifecycleSharedFunctions
 import com.my.metagraph_social.shared_data.types.States._
-//import com.my.metagraph_social.shared_data.types.Updates._
-//import com.my.metagraph_social.shared_data.types.codecs.DataUpdateCodec._
+import com.my.metagraph_social.shared_data.types.States.NaptanEntry._
+import com.my.metagraph_social.shared_data.types.codecs.DataUpdateCodec._
 import io.circe.{Decoder, Encoder}
 import io.constellationnetwork.currency.dataApplication._
 import io.constellationnetwork.currency.dataApplication.dataApplication.{DataApplicationBlock, DataApplicationValidationErrorOr}
 import io.constellationnetwork.json.JsonSerializer
 import io.constellationnetwork.security.signature.Signed
+import io.constellationnetwork.security.signature.Signed._
 import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 import org.http4s.{EntityDecoder, HttpRoutes}
-import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 
 object DataL1Service {
 
@@ -46,15 +46,18 @@ object DataL1Service {
       override def signedDataEntityDecoder: EntityDecoder[F, Signed[NaptanEntry]] =
         circeEntityDecoder
 
+
       override def serializeBlock(
         block: Signed[DataApplicationBlock]
-      ): F[Array[Byte]] =
+      ): F[Array[Byte]] = {
         JsonSerializer[F].serialize[Signed[DataApplicationBlock]](block)
+      }
 
       override def deserializeBlock(
         bytes: Array[Byte]
-      ): F[Either[Throwable, Signed[DataApplicationBlock]]] =
+      ): F[Either[Throwable, Signed[DataApplicationBlock]]] = {
         JsonSerializer[F].deserialize[Signed[DataApplicationBlock]](bytes)
+      }
 
       override def serializeState(
         state: NaptanEntryOnChainState

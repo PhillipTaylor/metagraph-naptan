@@ -14,6 +14,7 @@ import java.time.LocalDateTime
 case class StringWithLang(v :String, lang :String)
 
 object States {
+
   @derive(decoder, encoder)
   case class NaptanEntry(
     atcoCode :String,
@@ -55,10 +56,10 @@ object States {
     status :String,
     ordinal: SnapshotOrdinal,
     postTime: LocalDateTime
-  )
+  ) extends DataUpdate
 
   @derive(decoder, encoder)
-  case class NaptanEntryOnChainState(updates: List[NaptanEntry]) extends DataOnChainState with DataUpdate
+  case class NaptanEntryOnChainState(updates: List[NaptanEntry]) extends DataOnChainState
 
   @derive(decoder, encoder)
   case class NaptanUnifiedDataset(uniqueNaptanEntries: List[NaptanEntry]) extends DataCalculatedState

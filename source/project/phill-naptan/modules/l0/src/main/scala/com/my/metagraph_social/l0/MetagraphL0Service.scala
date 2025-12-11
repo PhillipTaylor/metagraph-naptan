@@ -7,17 +7,20 @@ import com.my.metagraph_social.l0.custom_routes.CustomRoutes
 import com.my.metagraph_social.shared_data.LifecycleSharedFunctions
 import com.my.metagraph_social.shared_data.calculated_state.CalculatedStateService
 import com.my.metagraph_social.shared_data.types.States._
-//import com.my.metagraph_social.shared_data.types.Updates._
-//import com.my.metagraph_social.shared_data.types.codecs.DataUpdateCodec._
+import com.my.metagraph_social.shared_data.types.States.NaptanEntry._
+import com.my.metagraph_social.shared_data.types.codecs.DataUpdateCodec._
 import io.circe.generic.auto._
 import io.circe.{Decoder, Encoder}
 import io.constellationnetwork.currency.dataApplication._
 import io.constellationnetwork.currency.dataApplication.dataApplication.{DataApplicationBlock, DataApplicationValidationErrorOr}
+import io.constellationnetwork.currency.dataApplication.dataApplication.DataApplicationBlock._
+import io.constellationnetwork.currency.dataApplication.DataTransaction._
 import io.constellationnetwork.json.JsonSerializer
 import io.constellationnetwork.schema.SnapshotOrdinal
 import io.constellationnetwork.security.SecurityProvider
 import io.constellationnetwork.security.hash.Hash
 import io.constellationnetwork.security.signature.Signed
+import io.constellationnetwork.security.signature.Signed._
 import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 import org.http4s.{EntityDecoder, HttpRoutes}
 
@@ -73,7 +76,7 @@ object MetagraphL0Service {
         override def calculatedStateDecoder: Decoder[NaptanUnifiedDataset] =
           implicitly[Decoder[NaptanUnifiedDataset]]
 
-        override def signedDataEntityDecoder: EntityDecoder[F, Signed[NaptanEntry]] =
+        implicit def signedDataEntityDecoder: EntityDecoder[F, Signed[NaptanEntry]] =
           circeEntityDecoder
 
         override def serializeBlock(
