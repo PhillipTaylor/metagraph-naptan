@@ -1,0 +1,54 @@
+meta {
+  name: Insert Naptan Entry
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:9200/data-application/naptanEntries/insertOne
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "naptanCode" : "bstjada",
+    "atcoCode" : "0100BRP90317",
+    "naptanCode" : "",
+    "plateCode" : "",
+    "cleardownCode" : "",
+    "commonName" : { "v" : "Temple Meads Stn", "lang" : "en-GB" },
+    "shortCommonName" : { "v" : "Temple Meads Stn", "lang" : "en-GB" },
+    "shortCommonNameLang" : "",
+    "landmark" : { "v" : "", "lang" : "" },
+    "street" : { "v" : "Temple Gate", "lang" : ""},
+    "crossing" : { "v" : "", "lang" : "" },
+    "indicator" : { "v" : "", "lang" : "" },
+    "bearing" : "",
+    "nptgLocalityCode" : "",
+    "localityName" : "",
+    "parentLocalityName" : "",
+    "grandParentLocalityName" : "",
+    "town" : { "v" : "", "lang" : "" },
+    "suburb" : { "v" : "", "lang" : "" },
+    "localityCentre" : "",
+    "gridType" : "",
+    "easting" : "",
+    "northing" : "",
+    "longitude" : "-2.58302,51",
+    "latitude" : "172304",
+    "stopType" : "OTH",
+    "busStopType" : "",
+    "timingStatus" : "",
+    "defaultWaitTime" : "",
+    "notes" : { "v" : "", "lang" : "" },
+    "administrativeAreaCode" : "",
+    "creationDateTime" : "",
+    "modificationDateTime" : "",
+    "revisionNumber" : "1",
+    "modification" : "new",
+    "status" : "active",
+    "ordinal" : 321,
+    "postTime" : "2025-12-01T00:00:00"
+  }
+}
